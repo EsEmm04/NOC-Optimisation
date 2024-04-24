@@ -1,0 +1,32 @@
+# Define variables to store input values and calculated values
+DECLARE cpu_arbitration_rate, io_arbitration_rate, read_latency, write_latency, average_latency, cpu_bandwidth, io_bandwidth, average_bandwidth
+
+# Read input values from user
+READ cpu_arbitration_rate, io_arbitration_rate
+
+# FETCH cpu_arbitration_rate and io_arbitration_rate from get_arbrates API
+cpu_arbitration_rate = get_arbrates('CPU')
+io_arbitration_rate = get_arbrates('IO')
+
+# Check if any one of the input is 0
+IF cpu_arbitration_rate EQUALS 0 OR io_arbitration_rate EQUALS 0 THEN
+    OUTPUT "Invalid Input"
+
+ELSE
+    # Calculate read and write latencies in cycles
+    read_latency = 1 / cpu_arbitration_rate  
+    write_latency = 1 / io_arbitration_rate  
+
+    # Calculate average latency
+    average_latency = (read_latency + write_latency) / 2
+
+    # Calculate average bandwidth in Bytes/sec
+    # Assuming fixed data width of 32 bytes per transfer
+    cpu_bandwidth = 32 * cpu_arbitration_rate 
+    io_bandwidth = 32 * io_arbitration_rate   
+    average_bandwidth = (cpu_bandwidth + io_bandwidth) / 2
+
+    # Output the calculated values
+    OUTPUT average_latency
+    OUTPUT average_bandwidth
+ENDIF
