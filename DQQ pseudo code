@@ -1,0 +1,67 @@
+# Initialize DQN parameters
+initialize_neural_network()      # Initialize the Q-network (DNN)
+initialize_replay_memory()       # Initialize replay memory buffer
+initialize_epsilon()             # Initialize exploration parameter (epsilon)
+initialize_total_reward()        # Initialize total reward
+
+# Main training loop
+WHILE training is not complete:
+   
+    # Check for any invalid input in transaction table such as negative timestamps
+
+    # Observe the current state from the NoC environment
+    current_state = observe_state()
+
+    # Choose an action using epsilon-greedy policy
+    chosen_action = choose_action(current_state)
+
+    # Execute the chosen action in the NoC environment
+    next_state, reward = execute_action(chosen_action)
+
+    # Store the experience in replay memory
+    store_experience(current_state, chosen_action, reward, next_state)
+
+    # Sample a mini-batch from replay memory
+    mini_batch = sample_mini_batch()
+
+    # Compute Q-value targets
+    FOR each experience in mini_batch:
+        IF next_state is terminal:
+            target = reward
+        ELSE:
+            target = reward + gamma * max(Q_network(next_state))
+
+        # Update the Q-network weights using gradient descent
+        update_Q_network_weights(current_state, chosen_action, target)
+
+    # Decay epsilon (exploration strategy)
+    decay_epsilon()
+
+    # Update the current state
+    current_state = next_state
+
+    # Accumulate total reward
+    total_reward += reward
+
+    # Check for termination or convergence
+    IF (
+        measured_latency <= min_latency AND
+        measured_bandwidth >= 0.95 * max_bandwidth AND
+        abs(get_buffer_occupancy(buffer_id) - 0.9) < 0.05 AND
+        throttling_frequency <= 0.05
+    ):
+        # We achieved the required NoC conditions, exit loop
+        EXIT WHILE loop
+
+    IF get_power_limit() == 1:
+        throttling_frequency++
+
+    # When throttling frequency exceeds 5, throttle
+    IF throttling_frequency > 5:
+        throttle()
+
+# Final Q-network represents the learned Q-values
+final_Q_network = get_final_Q_network()
+
+# Use the trained Q-network for autonomous NoC control
+autonomous_control(final_Q_network)
