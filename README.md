@@ -58,7 +58,7 @@ Build the gem5 according to the official gem5 documentation
 Now copy the env folder inside gem5 folder and user folder inside gem5 configs folder
 
 How to use it ?
-You can use this simulator by importing the simulator.py file which includes functions for apis and running the gem5 environment
+You can use this simulator by importing the simulator.py file which includes functions for apis and running the gem5 environment contained in Gem5 folder.
 
 add soc.py to config/user/
 and add simulator.py to env/
